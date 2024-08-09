@@ -14,8 +14,18 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
 
     # PostgreSQL Database
-    SQLALCHEMY_DATABASE_URI: Optional[str] = 'postgresql://user:password@db:5432/dbname'
+    HOST: str ="db"        
+    DATABASE: str ="jardin_anciens"
+    USER: str ="user"
+    PASSWORD: str ="password"
 
+    
+    # SMTP Server
+    SMTP_SERVER: str ="smtp.example.com"
+    SMTP_PORT: int =587
+    SMTP_USERNAME: str ="your_email@example.com"
+    SMTP_PASSWORD: str ="your_password"   
+    
     class Config:
         case_sensitive = True
 

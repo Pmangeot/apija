@@ -7,3 +7,4 @@ pydantic_settings
 bcrypt
 PyJWT
 python-multipart
+jinja2
