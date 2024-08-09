@@ -11,15 +11,15 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./db/migration.sql:/migration.sql
-      - ./db/migrate.sh:/docker-entrypoint-initdb.d/migrate.sh
+      - ./app/db/migration.sql:/migration.sql
+      - ./app/db/migrate.sh:/docker-entrypoint-initdb.d/migrate.sh
     command: ["/bin/sh", "-c", "chmod +x /docker-entrypoint-initdb.d/migrate.sh && docker-entrypoint.sh postgres"]
 
   web:
     build: .
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn main:app --host 0.0.0.0 --port 8000'
     volumes:
-      - .:/app
+      - ./app:/app
     ports:
       - "8000:8000"
     depends_on:

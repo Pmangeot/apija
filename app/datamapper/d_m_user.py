@@ -35,7 +35,7 @@ class UserMapper:
         conn.close()
         if row is None:
             return None
-        return User(id=row[0], firstname=row[1], lastname=row[2], email=row[3], admin=row[5])
+        return User(id=row[0], firstname=row[1], lastname=row[2], email=row[3], password=row[4], admin=row[5])
 
     @staticmethod
     def get_by_id(id: int) -> Optional[User]:

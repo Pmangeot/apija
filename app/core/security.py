@@ -1,15 +1,16 @@
 from fastapi.security import OAuth2PasswordBearer
+from core.config import settings
 import jwt
 import datetime
 from fastapi import HTTPException, Depends
 from models.m_user import User
 
-SECRET_KEY = "your-secret-key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+REFRESH_TOKEN_EXPIRE_MINUTES = settings.REFRESH_TOKEN_EXPIRE_MINUTES
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login")
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -31,7 +32,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         user_id = payload.get("id")
         firstname = payload.get("firstname")
         lastname = payload.get("lastname")
-        email = payload.get("email")
+        email = payload.get("sub")
         admin = payload.get("admin")
         if user_id is None or firstname is None or lastname is None or email is None or admin is None:
             raise HTTPException(status_code=401, detail="Invalid token")

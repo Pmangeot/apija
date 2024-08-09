@@ -73,3 +73,6 @@ INSERT INTO state (name) VALUES ('Validée');
 
 INSERT INTO season (name, active) VALUES ('2023', FALSE);
 INSERT INTO season (name, active) VALUES ('2024', TRUE);
+
+INSERT INTO app_user (firstname, lastname, email, password, admin) VALUES ('admin_f_n', 'admin_l_n', 'admin@admin.com', 'admin', TRUE);
+INSERT INTO app_user (firstname, lastname, email, password, admin) VALUES ('user_f_n', 'user_l_n', 'user@user.com', 'user', FALSE);

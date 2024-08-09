@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware # type: ignore
 from fastapi.staticfiles import StaticFiles # type: ignore
 from os.path import dirname, abspath, join
+from fastapi.openapi.utils import get_openapi
+from fastapi.openapi.docs import get_swagger_ui_html
 
 import sys
 sys.path.append('/api/root')
@@ -11,16 +13,9 @@ from core.config import settings
 
 app = FastAPI()
 
-#configuration du CORS
-origins = [
-    "*"
-    # "http://localhost",
-    # "http://localhost:4200",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
