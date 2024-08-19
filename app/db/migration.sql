@@ -74,5 +74,5 @@ INSERT INTO state (name) VALUES ('Validée');
 INSERT INTO season (name, active) VALUES ('2023', FALSE);
 INSERT INTO season (name, active) VALUES ('2024', TRUE);
 
-INSERT INTO app_user (firstname, lastname, email, password, admin) VALUES ('admin_f_n', 'admin_l_n', 'admin@admin.com', 'admin', TRUE);
-INSERT INTO app_user (firstname, lastname, email, password, admin) VALUES ('user_f_n', 'user_l_n', 'user@user.com', 'user', FALSE);
+INSERT INTO app_user (firstname, lastname, email, password, admin) VALUES ('admin_f_n', 'admin_l_n', 'admin@admin.com', '$2b$12$ob93Pbu7BZX6lXjex2EG6.EFvZsV2gKymKwpBQZBSDD3OtCxgbjeO', TRUE); --pwd admin : admin
+INSERT INTO app_user (firstname, lastname, email, password, admin) VALUES ('user_f_n', 'user_l_n', 'user@user.com', '$2b$12$jlO63/BLTkg6DNa2UWnwh.6mtz8lv441f07wwvnn5GzoLc5lkoKB6', FALSE); --pwd user: user

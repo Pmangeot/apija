@@ -45,6 +45,21 @@ def update_user(user_update: UserUpdate, user: User = Depends(get_current_user))
         raise HTTPException(status_code=401, detail="Invalid token")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+@router.get("/me", response_model=User)
+def get_infos_user(user: User = Depends(get_current_user)):
+    try:
+        infos_user = UserMapper.get_by_id(user.id)
+        if infos_user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        return infos_user
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.put("/password", response_model=User)
 def update_user_password(user_password_update: UserPasswordUpdate, user: User = Depends(get_current_user)):

@@ -3,7 +3,7 @@
 A FastAPI personal template using Docker that includes **SMTPServer**, **Postgres**.
 The API is configured to allow SQL request only through datamapper
 
-##  Installation
+## Installation
 
 ```sh
 $ git clone https://github.com/Pmangeot/apija.git
@@ -15,6 +15,11 @@ Once in your IDE, you need to configure the /core/config.py file with the env va
 You should also modify the endpoints, that are mere examples of code, and add you sql initialisation script directly in the /db/migration.sql file
 
 Once modified you can launch the container with docker : ```docker compose up --build```
+
+## Use
+
+Swagger documentation is reachable in the /docs route of the base URL
+Pytest can be launched directly from the docker termainl with the commande ```pytest```
 
 ## Evolutions
 
