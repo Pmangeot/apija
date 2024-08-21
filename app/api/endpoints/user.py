@@ -5,7 +5,7 @@ import bcrypt # type: ignore
 
 from models.m_user import User, UserCreate, UserUpdate, UserPasswordUpdate, Token
 from datamapper.d_m_user import UserMapper
-from core.security import get_current_user, create_access_token, create_refresh_token, SECRET_KEY, ALGORITHM, oauth2_scheme
+from core.security import get_current_user, create_access_token, create_refresh_token, is_admin, SECRET_KEY, ALGORITHM, oauth2_scheme
 
 router = APIRouter()
 
@@ -96,8 +96,7 @@ def delete_user(user_id: int, user: User = Depends(get_current_user)):
 
 @router.delete("/delete_all")
 def delete_all_users(user: User = Depends(get_current_user)):
-    if not user.admin:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+    is_admin(user)
     try:
         UserMapper.delete_all()
         return {"message": "All users deleted"}

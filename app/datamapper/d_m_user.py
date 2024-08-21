@@ -3,14 +3,19 @@ from typing import Optional
 import bcrypt # type: ignore
 from db.db import get_db_connection
 from models.m_user import User, UserCreate, UserUpdate, UserPasswordUpdate
+from core.services import PasswordHasher
 
 class UserMapper:
-    @staticmethod
-    def create(user: UserCreate) -> User:
+    ## ajouter un constructeur pour le hasher de mdp
+    def __init__(self, hasher:PasswordHasher):
+        self.hasher = hasher
+
+
+    def create(self, user: UserCreate) -> User: 
         conn = get_db_connection()
         cur = conn.cursor()
         try:
-            hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            hashed_password = self.hasher.hash_password(user.password)
             cur.execute(
                 "INSERT INTO app_user (firstname, lastname, email, password, admin) VALUES (%s, %s, %s, %s, %s) RETURNING *",
                 (user.firstname, user.lastname, user.email, hashed_password, False)
@@ -72,17 +77,16 @@ class UserMapper:
             return None
         return User(id=row[0], firstname=row[1], lastname=row[2], email=row[3], admin=row[5])
 
-    @staticmethod
-    def password_update(user_id: int, user_update: UserPasswordUpdate) -> None:
 
+    def password_update(self, user_id: int, user_update: UserPasswordUpdate) -> None:
         user = UserMapper.get_by_id(user_id)
-        if not bcrypt.checkpw(user_update.old_password.encode('utf-8'), user.password.encode('utf-8')):
+        if not self.hasher.compare_password(user_update.old_password, user.password):
             raise HTTPException(status_code=400, detail="Incorrect password")
         
         conn = get_db_connection()
         cur = conn.cursor()
         try:
-            hashed_password = bcrypt.hashpw(user_update.new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            hashed_password = self.hasher.hash_password(user_update.new_password)
             cur.execute(
                 "UPDATE app_user SET password = %s WHERE id = %s RETURNING *",
                 (hashed_password, user_id)
@@ -110,7 +114,7 @@ class UserMapper:
         finally:
             cur.close()
             conn.close()
-
+            
     @staticmethod
     def delete_all() -> None:
         conn = get_db_connection()

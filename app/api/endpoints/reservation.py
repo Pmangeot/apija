@@ -6,7 +6,7 @@ from datamapper.d_m_article import ArticleMapper
 from models.m_reservation import Reservation, ReservationCreate, ReservationUpdate
 from models.m_reservation_articles import ReservationArticlesCreate
 from models.m_user import User
-from core.security import get_current_user
+from core.security import get_current_user, is_admin
 
 router = APIRouter()
 
@@ -21,8 +21,7 @@ def create_reservation(reservation_data: ReservationCreate, user: User = Depends
 
 @router.get("/all", response_model=List[Reservation])
 def get_all_reservations(user: User = Depends(get_current_user)):
-    if not user.admin:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+    is_admin(user)
     try:
         return ReservationMapper.get_all()
     except Exception as e:
