@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from core.security import get_current_user
 from models.m_user import User
 from typing import List
@@ -11,38 +11,38 @@ router = APIRouter()
 def get_all_types():
     return TypeMapper.get_all()
 
-@router.post("/", response_model=Type)
-def create_article(article: TypeCreate, user: User = Depends(get_current_user)):
+@router.post("/", response_model=Type, status_code=status.HTTP_201_CREATED)
+def create_type(new_type: TypeCreate, user: User = Depends(get_current_user)):
     if not user.admin:
         raise HTTPException(status_code=403, detail="Forbidden")
     try:
-        return TypeMapper.create(article)
+        return TypeMapper.create(new_type)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.put("/{article_id}", response_model=Type)
-def update_article(article_id: int, article: TypeUpdate, user: User = Depends(get_current_user)):
+@router.put("/{type_id}", response_model=Type)
+def update_type(type_id: int, updated_type: TypeUpdate, user: User = Depends(get_current_user)):
     if not user.admin:
         raise HTTPException(status_code=403, detail="Forbidden")
-    updated_article = TypeMapper.update(article_id, article)
+    updated_article = TypeMapper.update(type_id, updated_type)
     if updated_article is None:
-        raise HTTPException(status_code=404, detail="Article not found")
+        raise HTTPException(status_code=404, detail="Type not found")
     return updated_article
 
-@router.delete("/{article_id}")
-def delete_article(article_id: int, user: User = Depends(get_current_user)):
+@router.delete("/{type_id}")
+def delete_type(type_id: int, user: User = Depends(get_current_user)):
     if not user.admin:
         raise HTTPException(status_code=403, detail="Forbidden")
-    if not TypeMapper.delete(article_id):
-        raise HTTPException(status_code=404, detail="Article not found")
-    return {"message": "Article deleted"}
+    if not TypeMapper.delete(type_id):
+        raise HTTPException(status_code=404, detail="Type not found")
+    return {"message": "Type deleted"}
 
 @router.delete("/")
-def delete_all_articles(user: User = Depends(get_current_user)):
+def delete_all_types(user: User = Depends(get_current_user)):
     if not user.admin:
         raise HTTPException(status_code=403, detail="Forbidden")
     try:
         TypeMapper.delete_all()
-        return {"message": "All articles deleted"}
+        return {"message": "All types deleted"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

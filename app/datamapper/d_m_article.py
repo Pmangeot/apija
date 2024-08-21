@@ -81,3 +81,17 @@ class ArticleMapper:
         finally:
             cur.close()
             conn.close()
+
+    @staticmethod
+    def get_by_id(article_id: int) -> Optional[Article]:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM article WHERE id = %s", (article_id,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        if row is None:
+            return None
+        
+        return Article(id=row[0], name=row[1], type_id=row[2], description=row[3], total_stock=row[4], remaining_quantity=row[5], season_id=row[6])

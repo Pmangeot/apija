@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 import jwt
 import bcrypt # type: ignore
@@ -9,7 +9,7 @@ from core.security import get_current_user, create_access_token, create_refresh_
 
 router = APIRouter()
 
-@router.post("/", response_model=User)
+@router.post("/new", response_model=User, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate):
     try:
         return UserMapper.create(user)
@@ -85,7 +85,7 @@ def refresh_token(refresh_token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{user_id}")
-def delete_all_users(user_id: int, user: User = Depends(get_current_user)):
+def delete_user(user_id: int, user: User = Depends(get_current_user)):
     if not user.admin or user.id != user_id:
         raise HTTPException(status_code=403, detail="Unauthorized")
     try:
@@ -94,7 +94,7 @@ def delete_all_users(user_id: int, user: User = Depends(get_current_user)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/")
+@router.delete("/delete_all")
 def delete_all_users(user: User = Depends(get_current_user)):
     if not user.admin:
         raise HTTPException(status_code=403, detail="Unauthorized")

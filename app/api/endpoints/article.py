@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from typing import List
 from datamapper.d_m_article import ArticleMapper
 from models.m_article import ArticleCreate, Article, ArticleUpdate
@@ -9,7 +9,7 @@ router = APIRouter()
 def get_all_articles():
     return ArticleMapper.get_all()
 
-@router.post("/", response_model=Article)
+@router.post("/", response_model=Article, status_code=status.HTTP_201_CREATED)
 def create_article(article: ArticleCreate):
     try:
         return ArticleMapper.create(article)
