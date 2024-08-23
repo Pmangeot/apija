@@ -86,8 +86,8 @@ def refresh_token(refresh_token: str = Depends(oauth2_scheme)):
 
 @router.delete("/{user_id}")
 def delete_user(user_id: int, user: User = Depends(get_current_user)):
-    if not user.admin or user.id != user_id:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+    if user.id != user_id:
+        is_admin(user)
     try:
         UserMapper.delete_one(user_id)
         return {"message": "User deleted"}

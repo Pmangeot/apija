@@ -1,6 +1,6 @@
 from fastapi import BackgroundTasks, APIRouter, Depends, HTTPException
 from core.email import EmailSender
-from core.security import get_current_user
+from core.security import get_current_user, is_admin
 from models.m_user import User
 
 # Instanciation d'EmailSender
@@ -10,8 +10,7 @@ router = APIRouter()
 
 @router.post("/send")
 async def send_email_endpoint(background_tasks: BackgroundTasks, to_email: str, subject: str, title: str, content: str,  user: User = Depends(get_current_user)):
-    if not user.admin:
-        raise HTTPException(status_code=403, detail="Forbidden")
+    is_admin(user)
     
     context = {
         "subject": subject,

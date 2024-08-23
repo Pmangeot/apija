@@ -12,6 +12,18 @@ class TypeMapper:
         cur.close()
         conn.close()
         return [Type(id=row[0], name=row[1], description=row[2]) for row in rows]
+    
+    @staticmethod
+    def get_by_id(type_id: int) -> Optional[Type]:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM type WHERE id = %s", (type_id,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row is None:
+            return None
+        return Type(id=row[0], name=row[1], description=row[2])
 
     @staticmethod
     def create(type: TypeCreate) -> Type:
@@ -51,7 +63,7 @@ class TypeMapper:
             conn.close()
         if row is None:
             return None
-        return Type(id=row[0], name=row[1], description=row[3])
+        return Type(id=row[0], name=row[1], description=row[2])
 
     @staticmethod
     def delete(type_id: int) -> bool:

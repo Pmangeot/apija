@@ -6,7 +6,6 @@ from models.m_user import User, UserCreate, UserUpdate, UserPasswordUpdate
 from core.services import PasswordHasher
 
 class UserMapper:
-    ## ajouter un constructeur pour le hasher de mdp
     def __init__(self, hasher:PasswordHasher):
         self.hasher = hasher
 
@@ -56,7 +55,7 @@ class UserMapper:
 
     @staticmethod
     def update(user_id: int, user_update: UserUpdate) -> Optional[User]:
-        update_data = user_update.dict(exclude_unset=True)
+        update_data = user_update.model_dump(exclude_unset=True)
 
         set_clause = ", ".join(f"{key} = %s" for key in update_data.keys())
         values = list(update_data.values()) + [user_id]
@@ -114,7 +113,7 @@ class UserMapper:
         finally:
             cur.close()
             conn.close()
-            
+
     @staticmethod
     def delete_all() -> None:
         conn = get_db_connection()

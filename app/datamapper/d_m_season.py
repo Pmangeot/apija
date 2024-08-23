@@ -4,6 +4,7 @@ from models.m_season import Season, SeasonUpdate, SeasonCreate
 from models.m_reservation import Reservation, ReservationCreate, ReservationUpdate, ArticlesInResa
 from models.m_article import Article
 from collections import defaultdict
+from fastapi import HTTPException
 
 class SeasonMapper:
     @staticmethod
@@ -181,6 +182,34 @@ class SeasonMapper:
                     articles=[]
                 )
             return None
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cur.close()
+            conn.close()
+
+    @staticmethod
+    def delete_season(season_id: int) -> Optional[Season]:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        try:
+            cur.execute("""
+                SELECT id, name, active 
+                FROM season 
+                WHERE id = %s
+            """, (season_id,))
+            row = cur.fetchone()
+
+            if not row:
+                return None
+
+            cur.execute("""
+                DELETE FROM season 
+                WHERE id = %s
+            """, (season_id,))
+            conn.commit()
+
         except Exception as e:
             conn.rollback()
             raise e

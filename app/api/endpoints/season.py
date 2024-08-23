@@ -3,7 +3,7 @@ from typing import List
 from datamapper.d_m_season import SeasonMapper
 from models.m_season import Season, SeasonCreate, SeasonUpdate
 from models.m_user import User
-from core.security import get_current_user
+from core.security import get_current_user, is_admin
 
 router = APIRouter()
 
@@ -16,8 +16,7 @@ def get_current_season(user: User = Depends(get_current_user)):
     
 @router.get("/all", response_model=List[Season], status_code=status.HTTP_200_OK)
 def get_all_seasons( user: User = Depends(get_current_user)):
-    if not user.admin:
-        raise HTTPException(status_code=403, detail="Forbidden")
+    is_admin(user)
     try:
         seasons = SeasonMapper.get_all_seasons()
         if seasons is None:
@@ -28,8 +27,7 @@ def get_all_seasons( user: User = Depends(get_current_user)):
     
 @router.post("/new", response_model=Season, status_code=status.HTTP_201_CREATED)
 def create_season(new_season: SeasonCreate, user: User = Depends(get_current_user)):
-    if not user.admin:
-        raise HTTPException(status_code=403, detail="Forbidden")
+    is_admin(user)
     try:
         has_active_season = SeasonMapper.get_active_seasons()
         if has_active_season: 
@@ -44,8 +42,7 @@ def create_season(new_season: SeasonCreate, user: User = Depends(get_current_use
     
 @router.put("/{season_id}/deactivate", response_model=Season, status_code=status.HTTP_200_OK)
 def deactivate_season(season_id: int, user: User = Depends(get_current_user)):
-    if not user.admin:
-        raise HTTPException(status_code=403, detail="Forbidden")
+    is_admin(user)
     try:
         season = SeasonMapper.deactivate_season(season_id)
         if season is None:
