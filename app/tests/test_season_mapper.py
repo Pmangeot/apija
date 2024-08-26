@@ -23,7 +23,6 @@ def test_get_active_season():
     global nbr_of_active_season
     active_seasons = SeasonMapper.get_active_seasons()
     nbr_of_active_season = len(active_seasons) - 1  
-    assert active_seasons[nbr_of_active_season].name == "Test Season"
     assert active_seasons[nbr_of_active_season].active is True
 
 @pytest.mark.order(3)

@@ -13,6 +13,7 @@ def get_all_articles():
 
 @router.post("/", response_model=Article, status_code=status.HTTP_201_CREATED)
 def create_article(article: ArticleCreate, user: User = Depends(get_current_user)):
+    print(user.admin)
     is_admin(user)
     try:
         return ArticleMapper.create(article)

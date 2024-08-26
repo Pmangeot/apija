@@ -16,3 +16,12 @@ def test_protected_route():
     headers = {"Authorization": f"Bearer {access_token}"}
     response = requests.get(f"{BASE_URL}/users/me", headers=headers)
     assert response.status_code == 200
+
+def test_protected_admin_route():
+    login_data = {"username": "admin@admin.com", "password": "admin"}
+    login_response = requests.post(f"{BASE_URL}/users/login", data=login_data)
+    assert login_response.status_code == 200
+    access_token = login_response.json().get("access_token")
+    headers = {"Authorization": f"Bearer {access_token}"}
+    response = requests.get(f"{BASE_URL}/resa/all", headers=headers)
+    assert response.status_code == 200
