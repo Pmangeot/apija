@@ -1,6 +1,6 @@
-# Fastapi Project Template
+# Fastapi Project
 
-A FastAPI personal template using Docker that includes **SMTPServer**, **Postgres**.
+A FastAPI personal using Docker that includes **SMTPServer**, **Postgres**.
 The API is configured to allow SQL request only through datamapper
 
 ## Installation
