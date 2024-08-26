@@ -1,15 +1,15 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 import jwt
 import bcrypt # type: ignore
 
 from models.m_user import User, UserCreate, UserUpdate, UserPasswordUpdate, Token
 from datamapper.d_m_user import UserMapper
-from core.security import get_current_user, create_access_token, create_refresh_token, SECRET_KEY, ALGORITHM, oauth2_scheme
+from core.security import get_current_user, create_access_token, create_refresh_token, is_admin, SECRET_KEY, ALGORITHM, oauth2_scheme
 
 router = APIRouter()
 
-@router.post("/", response_model=User)
+@router.post("/new", response_model=User, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate):
     try:
         return UserMapper.create(user)
@@ -85,19 +85,18 @@ def refresh_token(refresh_token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/{user_id}")
-def delete_all_users(user_id: int, user: User = Depends(get_current_user)):
-    if not user.admin or user.id != user_id:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+def delete_user(user_id: int, user: User = Depends(get_current_user)):
+    if user.id != user_id:
+        is_admin(user)
     try:
         UserMapper.delete_one(user_id)
         return {"message": "User deleted"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/")
+@router.delete("/delete_all")
 def delete_all_users(user: User = Depends(get_current_user)):
-    if not user.admin:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+    is_admin(user)
     try:
         UserMapper.delete_all()
         return {"message": "All users deleted"}

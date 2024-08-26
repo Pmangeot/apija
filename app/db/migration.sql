@@ -76,3 +76,19 @@ INSERT INTO season (name, active) VALUES ('2024', TRUE);
 
 INSERT INTO app_user (firstname, lastname, email, password, admin) VALUES ('admin_f_n', 'admin_l_n', 'admin@admin.com', '$2b$12$ob93Pbu7BZX6lXjex2EG6.EFvZsV2gKymKwpBQZBSDD3OtCxgbjeO', TRUE); --pwd admin : admin
 INSERT INTO app_user (firstname, lastname, email, password, admin) VALUES ('user_f_n', 'user_l_n', 'user@user.com', '$2b$12$jlO63/BLTkg6DNa2UWnwh.6mtz8lv441f07wwvnn5GzoLc5lkoKB6', FALSE); --pwd user: user
+
+INSERT INTO article (name, type_id, description, total_stock, remaining_quantity, season_id) VALUES ('Tomate cerise', 1, 'Tomate cerise à planter en terre', 100, 100, 2);
+INSERT INTO article (name, type_id, description, total_stock, remaining_quantity, season_id) VALUES ('Tomate coeur de boeuf', 1, 'Tomate coeur de boeuf à planter en terre', 100, 100, 2);
+INSERT INTO article (name, type_id, description, total_stock, remaining_quantity, season_id) VALUES ('Courgette', 2, 'Courgette à planter en terre', 100, 100, 2);
+INSERT INTO article (name, type_id, description, total_stock, remaining_quantity, season_id) VALUES ('Concombre', 2, 'Concombre à planter en terre', 100, 100, 2);
+INSERT INTO article (name, type_id, description, total_stock, remaining_quantity, season_id) VALUES ('Basilic', 3, 'Basilic à planter en terre', 100, 100, 2);
+INSERT INTO article (name, type_id, description, total_stock, remaining_quantity, season_id) VALUES ('Menthe', 3, 'Menthe à planter en terre', 100, 0, 2);
+INSERT INTO article (name, type_id, description, total_stock, remaining_quantity, season_id) VALUES ('Persil', 3, 'Persil à planter en terre', 100, 100, 2);
+
+INSERT INTO reservation (date, articles_total, user_id, state_id, season_id) VALUES ('2023-05-01', 2, 2, 1, 2);
+INSERT INTO reservation (date, articles_total, user_id, state_id, season_id) VALUES ('2023-05-01', 2, 2, 1, 2);
+
+INSERT INTO reservation_article (reservation_id, article_id, quantity) VALUES (1, 1, 1);
+INSERT INTO reservation_article (reservation_id, article_id, quantity) VALUES (1, 2, 1);
+INSERT INTO reservation_article (reservation_id, article_id, quantity) VALUES (2, 3, 1);
+INSERT INTO reservation_article (reservation_id, article_id, quantity) VALUES (2, 4, 1);

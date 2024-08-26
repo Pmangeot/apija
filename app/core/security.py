@@ -1,6 +1,7 @@
 from fastapi.security import OAuth2PasswordBearer
 from core.config import settings
 import jwt
+from jwt import ExpiredSignatureError, DecodeError, InvalidTokenError
 import datetime
 from fastapi import HTTPException, Depends
 from models.m_user import User
@@ -38,5 +39,15 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
             raise HTTPException(status_code=401, detail="Invalid token")
         user = User(id=user_id, firstname=firstname, lastname=lastname, email=email, admin=admin)
         return user
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except (DecodeError, InvalidTokenError):
+        raise HTTPException(status_code=401, detail="Invalid token")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+def is_admin(user: User = Depends(get_current_user)):
+    if not user.admin:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    return None
+

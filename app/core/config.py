@@ -1,5 +1,6 @@
 import pathlib
 from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 from typing import List
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -34,8 +35,9 @@ class Settings(BaseSettings):
     SMTP_USERNAME: str ="your_email@example.com"
     SMTP_PASSWORD: str ="your_password"   
     
-    class Config:
+    model_config = ConfigDict(
         case_sensitive = True
+    )
 
 
 # Instanciation
