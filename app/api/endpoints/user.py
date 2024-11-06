@@ -4,7 +4,7 @@ import jwt
 import bcrypt # type: ignore
 
 from models.m_user import User, UserCreate, UserUpdate, UserPasswordUpdate, Token
-from datamapper.d_m_user import UserMapper
+from datamapper.d_m_user import UserMapper, user_mapper
 from core.security import get_current_user, create_access_token, create_refresh_token, is_admin, SECRET_KEY, ALGORITHM, oauth2_scheme
 
 router = APIRouter()
@@ -12,7 +12,7 @@ router = APIRouter()
 @router.post("/new", response_model=User, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate):
     try:
-        return UserMapper.create(user)
+        return user_mapper.create(user=user)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -9,8 +9,9 @@ class UserMapper:
     def __init__(self, hasher:PasswordHasher):
         self.hasher = hasher
 
+    def create(self, user: UserCreate) -> User:
+        print(f"self: {self}, user: {user}")
 
-    def create(self, user: UserCreate) -> User: 
         conn = get_db_connection()
         cur = conn.cursor()
         try:
@@ -127,3 +128,5 @@ class UserMapper:
         finally:
             cur.close()
             conn.close()
+
+user_mapper = UserMapper(PasswordHasher())
